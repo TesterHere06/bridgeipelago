@@ -206,7 +206,7 @@ class TrackerClient():
     global CoreConfig
     global ConfigLock
     tags: set[str] = {'TextOnly','Tracker', 'DeathLink'}
-    version: dict[str, any] = {"major": 0, "minor": 6, "build": 0, "class": "Version"}
+    version: dict[str, any] = {"major": 0, "minor": 6, "build": 8, "class": "Version"}
     items_handling: int = 0b000  # This client does not receive any items
 
     class MessageCommand(Enum):
@@ -348,8 +348,10 @@ class TrackerClient():
 
     def get_datapackage(self) -> None:
         print("-- Requesting DataPackage from server.")
+        RequestedGames = json.load(open(GetCoreFiles("archroomdata"), 'r'))["games"]
         payload = {
-            'cmd': 'GetDataPackage'
+            'cmd': 'GetDataPackage',
+            'games': RequestedGames
         }
         self.send_message(payload)
 
@@ -1886,7 +1888,7 @@ def main():
 
     # Version Checking against GitHub
     try:
-        BPversion = "live-v3.0.0"
+        BPversion = "live-v3.0.1"
         GHAPIjson = json.loads(requests.get("https://api.github.com/repos/Quasky/bridgeipelago/releases/latest").content)
         if(GHAPIjson["tag_name"] != BPversion):
             print("You are not running the current release of Bridgeipelago.")
